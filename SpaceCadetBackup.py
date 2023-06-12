@@ -15,19 +15,21 @@ pygame.init()
 root = Tk()
 M_WIDTH = root.winfo_vrootwidth()
 M_HEIGHT = root.winfo_screenheight()
+# 1536 M_WIDTH
+# 864 M_HEIGHT
 screen = pygame.display.set_mode((M_WIDTH, M_HEIGHT))
 
 Dict = []
 enemy_List = []
 enemy_Number = 4
-bg_Speed = 0.2
+bg_Speed = 0.1
 
 player_X_Pos = (M_WIDTH / 2) - 20
 player_Y_Pos = (M_HEIGHT - 50)
 
 # vars
 total_FPS = 2000
-TXT_COLOR = (255, 255, 255)
+TXT_COLOR = (255, 0, 0)
 font = pygame.font.SysFont("Verdana", 20)
 header = pygame.font.SysFont("Verdana", 40)
 
@@ -59,14 +61,24 @@ pygame.display.set_icon(icon)
 EMPImg = pygame.image.load(os.path.join("Sprites", "plasmaICON.jpg"))
 EMPImg = pygame.transform.scale((EMPImg), (30, 30))
 
-# background image
 BG_IMG = pygame.image.load(os.path.join(
-    "Sprites", "Picture2.jpg"))  # background.png b1.jpg
-BG_IMG = pygame.transform.scale((BG_IMG), (M_WIDTH, BG_IMG.get_height()))
+    "Sprites", "redStarsJPG.jpg"))
+
+top = pygame.image.load(os.path.join(
+    "Sprites", "topPNG.png"))
+bottom = pygame.image.load(os.path.join(
+    "Sprites", "bottomPNG.png"))
+
+BG_IMG = pygame.transform.scale((BG_IMG), (M_WIDTH, M_HEIGHT))
+
+
+bottomControls = pygame.transform.scale(
+    (bottom), (M_WIDTH, bottom.get_height()))
+topControls = pygame.transform.scale((top), (M_WIDTH, top.get_height()))
 
 # player
 user = pygame.image.load(os.path.join("Sprites", "player.png"))
-user = pygame.transform.scale((user), (40, 40))
+user = pygame.transform.scale((user), (20, 20))
 
 # bullets
 LAZER = pygame.image.load(os.path.join("Sprites", "blueShot.png"))
@@ -77,15 +89,14 @@ def createShips(totalEnemies):
         randomShipNum = random.randrange(4)
         enemyImage = pygame.image.load(os.path.join(
             "Sprites", f"enemy{randomShipNum}.jpg"))
+        enemyImage = pygame.transform.scale((enemyImage), (30, 30))
         # no need to exclude words already used
         randomWord = Dict[random.randint(0, (len(Dict)-1))]
         randomSpeed = .09
         randomX = random.randint(0, M_WIDTH)  # random x
         randomY = ((random.randint(50, 100))*-1)  # random y
-        imgWidth = enemyImage.get_width()  # width of image
-        imgHeight = enemyImage.get_height()  # height of image
         currentShip = ship.enemyInfo(
-            enemyImage, randomWord, randomX, randomY, imgWidth, imgHeight, randomSpeed)
+            enemyImage, randomWord, randomX, randomY, 30, 30, randomSpeed)
         enemy_List.append(currentShip)
         totalEnemies = totalEnemies - 1
 
@@ -114,7 +125,8 @@ class FPS():
             str(round(self.clock.get_fps())), True, TXT_COLOR)
         # fps screen postion
         display.blit(
-            self.text, (M_WIDTH - (self.text).get_width() - 5, M_HEIGHT - 30))
+            self.text, (M_WIDTH - (self.text).get_width() - 5, M_HEIGHT - 80))
+# self.text, (M_WIDTH - (self.text).get_width() - 5, M_HEIGHT - 30))
 
 
 def storedEMPs():  # shows stored emp blasts
@@ -164,45 +176,42 @@ def showFactsAndPlayer():
                 wrds_typed.get_height() + EMPs_lbl.get_height() + 5))
 
     # shows fps (word)
-    fps_lbl = font.render(f"FPS: ", 1, TXT_COLOR)
-    screen.blit(fps_lbl, (M_WIDTH - (fps_lbl).get_width() - 60, M_HEIGHT - 30))
+    fps_lbl = font.render(
+        f"Nearest Ship: {round(displayDistance)}", 1, TXT_COLOR)
 
     # shows user angle
-    t_angle_lbl = font.render(
-        f"Trajectory Angle: {str(abs(round(trajectoryAngle)))}", 1, TXT_COLOR)
+    t_angle_lbl = font.render(f"Enemy Count: {len(enemy_List)}", 1, TXT_COLOR)
     screen.blit(t_angle_lbl, (M_WIDTH - (t_angle_lbl).get_width() -
                 5, M_HEIGHT - fps_lbl.get_height() - 30))
 
     # shows distance
     nearest_ship = font.render(
-        f"Nearest Ship: {(round(displayDistance))}", 1, TXT_COLOR)
-    screen.blit(nearest_ship, (M_WIDTH - (nearest_ship).get_width() - 5,
+        f"FPS:", 1, TXT_COLOR)
+
+    screen.blit(nearest_ship, (M_WIDTH - 100,
                 M_HEIGHT - t_angle_lbl.get_height() - fps_lbl.get_height() - 30))
-
-    # updates lives
-    typing_lbl = font.render(f"Lives: {livesVar}", 1, TXT_COLOR)
-    screen.blit(typing_lbl, (5, M_HEIGHT - 30))
-
-    # shows (target) word
-    typingW = font.render(f"Target:", 1, TXT_COLOR)
-    screen.blit(typingW, (5, M_HEIGHT - typing_lbl.get_height() - 30))
-
-    # updates word being looked at using color
-    typingW2 = font.render(target_Var, 1, [255, 22, 12])
-    screen.blit(typingW2, (typingW.get_width() + 10,
-                M_HEIGHT - typing_lbl.get_height() - 30))
+    screen.blit(fps_lbl, (M_WIDTH - (fps_lbl).get_width() - 10, M_HEIGHT - 30))
 
     # shows danger (word)
     dnger_lbl = font.render(f"Danger: ", 1, TXT_COLOR)
-    screen.blit(dnger_lbl, (5, M_HEIGHT -
+    screen.blit(dnger_lbl, (5, M_HEIGHT - 30))
+
+    # shows (target) word
+    typingW = font.render(f"Target:", 1, TXT_COLOR)
+
+    # updates word being looked at using color
+    typingW2 = font.render(target_Var, 1, [255, 22, 12])
+
+    # updates lives
+    typing_lbl = font.render(f"Lives: {livesVar}", 1, TXT_COLOR)
+    screen.blit(typing_lbl, (5, M_HEIGHT -
                 typing_lbl.get_height() - typingW.get_height() - 30))
+    screen.blit(typingW, (5, M_HEIGHT - typing_lbl.get_height() - 30))
 
     dnger_lbl = header.render(f"Level: {lvl_Var}", 1, TXT_COLOR)
     screen.blit(dnger_lbl, (5, 5))
-
-    enmey_lbl = font.render(f"Enemy Count: {len(enemy_List)}", 1, TXT_COLOR)
-    screen.blit(enmey_lbl, (5, M_HEIGHT -
-                typing_lbl.get_height() - typingW.get_height() - dnger_lbl.get_height() - 10))
+    screen.blit(typingW2, (typingW.get_width() + 10,
+                M_HEIGHT - typing_lbl.get_height() - 30))
 
 
 def measureDistance():
@@ -223,13 +232,13 @@ def measureDistance():
 
     if tempDist < 300:
         dangerLvl = font.render("High", True, (255, 0, 0))
-        screen.blit(dangerLvl, (100, M_HEIGHT - 80))
+        screen.blit(dangerLvl, (100, M_HEIGHT - 30))
     elif tempDist > 300 and tempDist < 600:
         dangerLvl = font.render("Medium", True, (255, 127, 0))
-        screen.blit(dangerLvl, (100, M_HEIGHT - 80))
+        screen.blit(dangerLvl, (100, M_HEIGHT - 30))
     elif tempDist > 600:
         dangerLvl = font.render("Safe", True, (0, 255, 0))
-        screen.blit(dangerLvl, (100, M_HEIGHT - 80))
+        screen.blit(dangerLvl, (100, M_HEIGHT - 30))
     displayDistance = shortest
 
 # gets the newest positon
@@ -250,19 +259,6 @@ def turnShpByAngl(image, angle, xPos, yPos):
     new_rect = rotated_image.get_rect(
         center=image.get_rect(center=(xPos, yPos)).center)
     return rotated_image, new_rect
-
-
-"""
-this part of the code manually turns the player ship to the facing enemy ship
-"""
-
-
-def turnPlayerTo(player, enemyShip):
-    global trajectoryAngle
-    trajectoryAngle = enemyShip.getAngle()
-    rotated_image, new_rect = turnShpByAngl(
-        player, enemyShip.getAngle(), player_X_Pos, player_Y_Pos)
-    screen.blit(rotated_image, new_rect.topleft)
 
 
 """
@@ -291,7 +287,7 @@ def createBul(enemyShipFacing):
     bulSpawnY = player_Y_Pos - 30
     bulWid = LAZER.get_width()
     bulHgt = LAZER.get_height()
-    bulSpeed = -20
+    bulSpeed = -80
     bulletAngleRoute = enemyShipFacing.getAngle()
     bulFired = bullet.bulletInfo(LAZER, bulSpawnX, bulSpawnY,
                                  bulWid, bulHgt, bulSpeed, bulletAngleRoute, enemyShipFacing)
@@ -370,6 +366,8 @@ def main():
 
         # background image
         screen.fill((0, 0, 0))
+        # controls
+
         screen.blit(BG_IMG, (0, 0))
         screen.blit(BG_IMG, (0, i))
         screen.blit(BG_IMG, (0, -(BG_IMG.get_height()) + i))
@@ -378,10 +376,15 @@ def main():
             i = 0
         i += bg_Speed
 
+        screen.blit(bottomControls, (0, M_HEIGHT-100))
+        screen.blit(topControls, (0, 0))
+
         # load in the player boundary and show the controls
         # show player boundaries
         pygame.draw.rect(screen, (0, 0, 0, 0), player_Boundaries, -1)
         # -1 for invisible
+
+        # showFactsAndPlayer
         showFactsAndPlayer()
 
         # increase round when all ships are destroyed
@@ -456,37 +459,35 @@ def main():
                 # then get  # [0:1] (the first character from the word)
 
                 # only start looping when target_Var is empty
-
                 letter = str(event.unicode)
                 if len(target_Var) == 0 and letter.isalpha() == True:
                     for counter, enemySHIPobj in enumerate(enemy_List):
                         if letter == enemy_List[counter].getWord()[0:1]:
+
+                            # next 3 lines are for removing the letter hit from each word
                             enemy_List[counter].setWord(
                                 enemy_List[counter].getWord()[1:])
                             target_Var = enemy_List[counter].getWord()
 
-                            # Chili Red color
-                            enemy_List[counter].setColor([255, 22, 12])
-
-                            turnPlayerTo(user, enemySHIPobj)
-                            # add bullet when a key is typed & letter is removed from the word
-                            createBul(enemySHIPobj)
-                            saveIndexOFSPACESHIPp = counter
+                            # THE COLOR OF THE WORDS
+                            enemy_List[counter].setColor([255, 255, 0])
+                            # bullet hit
 
                             # the second we find a ship word we break out of the loop
+                            saveIndexOFSPACESHIPp = counter
+
+                            # add bullet when a key is typed & letter is removed from the word
+                            createBul(enemySHIPobj)
                             break
 
                 letter2 = str(event.unicode)
                 if len(target_Var) > 0:
-                    # letter.isalpha() == True and
 
                     while letter2 == enemy_List[saveIndexOFSPACESHIPp].getWord()[0:1] and len(enemy_List) > 0 and saveIndexOFSPACESHIPp < len(enemy_List):
                         enemy_List[saveIndexOFSPACESHIPp].setWord(
                             enemy_List[saveIndexOFSPACESHIPp].getWord()[1:])
                         target_Var = enemy_List[saveIndexOFSPACESHIPp].getWord(
                         )
-
-                        turnPlayerTo(user, enemySHIPobj)
                         createBul(enemySHIPobj)
 
                         if (len(target_Var) == 0 and saveIndexOFSPACESHIPp < len(enemy_List)):
@@ -512,6 +513,7 @@ def main():
                 bulletBorder = pygame.Rect(
                     shot.getX(), shot.getY(), shot.getWidth(), shot.getHeight())
 
+                # bullet hit something
                 if (target_EnemyRect.colliderect(bulletBorder)):
                     if shot in current_Lazers_List and len(current_Lazers_List) > 0:
                         current_Lazers_List.remove(shot)
@@ -528,7 +530,6 @@ def main():
 
         # update everything in pygame
         pygame.display.update()
+
         # if cross is clicked, the window closes
-
-
 main()
