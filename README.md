@@ -1,3 +1,2 @@
 # SpaceInvaders
-
-Make sure the directory is exactly the same
+MAKE SURE THE DIRECTORY LAYOUT IS EXACTLY THE SAME
