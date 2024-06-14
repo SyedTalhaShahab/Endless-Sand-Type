@@ -22,7 +22,7 @@ screen = pygame.display.set_mode((M_WIDTH, M_HEIGHT))
 Dict = []
 enemy_List = []
 enemy_Number = 4
-bg_Speed = 0.1
+bg_Speed = 2
 
 player_X_Pos = (M_WIDTH / 2) - 20
 player_Y_Pos = (M_HEIGHT - 50)
@@ -30,6 +30,7 @@ player_Y_Pos = (M_HEIGHT - 50)
 # vars
 total_FPS = 2000
 TXT_COLOR = (255, 0, 0)
+
 font = pygame.font.SysFont("Verdana", 20)
 header = pygame.font.SysFont("Verdana", 40)
 
@@ -62,7 +63,7 @@ EMPImg = pygame.image.load(os.path.join("Sprites", "plasmaICON.jpg"))
 EMPImg = pygame.transform.scale((EMPImg), (30, 30))
 
 BG_IMG = pygame.image.load(os.path.join(
-    "Sprites", "redStarsJPG.jpg"))
+    "Sprites", "waterJPG.jpg"))
 
 top = pygame.image.load(os.path.join(
     "Sprites", "topPNG.png"))
@@ -95,11 +96,9 @@ def createShips(totalEnemies):
         randomSpeed = .09
         randomX = random.randint(0, M_WIDTH)  # random x
         randomY = ((random.randint(50, 100))*-1)  # random y
-        currentShip = ship.enemyInfo(
-            enemyImage, randomWord, randomX, randomY, 30, 30, randomSpeed)
+        currentShip = ship.enemyInfo(enemyImage, randomWord, randomX, randomY, 30, 30, randomSpeed)
         enemy_List.append(currentShip)
         totalEnemies = totalEnemies - 1
-
 
 def createDic():
     global Dict
@@ -216,41 +215,56 @@ def showFactsAndPlayer():
 
 def measureDistance():
     global displayDistance
-    # danger screen postion
-    # (finding the smallest position in the array)
 
-    # default ship is smallest
-    shortest = 9000
-    tempDist = 0
+    # Define danger thresholds
+    HIGH_DANGER_THRESHOLD = 300
+    MEDIUM_DANGER_THRESHOLD = 600
 
-    for iCount in range(len(enemy_List)):
-        tempDist = math.hypot(player_X_Pos - enemy_List[iCount].getX()+20,
-                              player_Y_Pos - enemy_List[iCount].getY()+20)
-        if tempDist < shortest:
-            shortest = tempDist
-            # change smallest to dist
+    # Initialize shortest distance to a large number
+    shortest = float('inf')
 
-    if tempDist < 300:
-        dangerLvl = font.render("High", True, (255, 0, 0))
-        screen.blit(dangerLvl, (100, M_HEIGHT - 30))
-    elif tempDist > 300 and tempDist < 600:
-        dangerLvl = font.render("Medium", True, (255, 127, 0))
-        screen.blit(dangerLvl, (100, M_HEIGHT - 30))
-    elif tempDist > 600:
-        dangerLvl = font.render("Safe", True, (0, 255, 0))
-        screen.blit(dangerLvl, (100, M_HEIGHT - 30))
+    # Calculate the shortest distance to any enemy
+    player_position = (player_X_Pos, player_Y_Pos)
+    for enemy in enemy_List:
+        enemy_position = (enemy.getX() + 20, enemy.getY() + 20)
+        tempDist = math.hypot(player_position[0] - enemy_position[0],
+                              player_position[1] - enemy_position[1])
+        shortest = min(shortest, tempDist)
+
+    # Determine the danger level based on the shortest distance
+    if shortest < HIGH_DANGER_THRESHOLD:
+        danger_text = "High"
+        danger_color = (255, 0, 0)
+    elif shortest < MEDIUM_DANGER_THRESHOLD:
+        danger_text = "Medium"
+        danger_color = (255, 127, 0)
+    else:
+        danger_text = "Safe"
+        danger_color = (0, 255, 0)
+
+    dangerLvl = font.render(danger_text, True, danger_color)
+    screen.blit(dangerLvl, (100, M_HEIGHT - 30))
+
+    # Set the global displayDistance to the shortest distance
     displayDistance = shortest
 
+
 # gets the newest positon
-
-
 def getNewPos(preX, preY, speed, angleInRad):
-    new_x = preX + (speed*math.cos(angleInRad))
-    new_y = preY + (speed*math.sin(angleInRad))
+    # Calculate the change in position
+    delta_x = speed * math.cos(angleInRad)
+    delta_y = speed * math.sin(angleInRad)
+
+    # Calculate the new position
+    new_x = preX + delta_x
+    new_y = preY + delta_y
+
     return new_x, new_y
 
 
-"""this part of the code turns the ship by the angle"""
+'''
+This part of the code turns the ship. It turns the ship by an angle.
+'''
 
 
 def turnShpByAngl(image, angle, xPos, yPos):
@@ -402,8 +416,8 @@ def main():
             EMP_zoom += 10
             EMP_Center_X -= 5
             EMP_Center_Y -= 5.5
-            if EMP_Center_Y < M_HEIGHT/2:
-                EMP_zoom = 60
+            if EMP_Center_Y < (M_HEIGHT * 0.7):
+                EMP_zoom = 600
                 using_EMP = False
                 # reset EMP vars
                 EMP_Center_X = player_X_Pos
@@ -470,7 +484,7 @@ def main():
                             target_Var = enemy_List[counter].getWord()
 
                             # THE COLOR OF THE WORDS
-                            enemy_List[counter].setColor([255, 255, 0])
+                            enemy_List[counter].setColor([255, 165, 0])
                             # bullet hit
 
                             # the second we find a ship word we break out of the loop
