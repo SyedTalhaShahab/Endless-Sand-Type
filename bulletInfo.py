@@ -64,5 +64,4 @@ class bulletInfo:
         self.angle = angle
 
     def toString(self):
-        "XPosition: " + str(self.xCordinate) + " YPosition: " + str(
-            self.yCordinate) + " Image dimensions: " + str(self.img.getheight()) + ""
+        return f"XPosition: {self.xCordinate}, YPosition: {self.yCordinate}, Image dimensions: {self.imgW}x{self.imgH}"
