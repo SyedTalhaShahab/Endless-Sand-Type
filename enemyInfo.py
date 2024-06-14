@@ -69,4 +69,8 @@ class enemyInfo:
 
     def toString(self):
         print("Word:", self.term, "XPos:", self.x, "YPos:", self.y, "Width:", self.width,
-              "Height:", self.height, "Speed", self.speed, "Angle Facing", self.radians)
+              "Height:", self.height, "Speed:", self.speed, "Angle Facing:", self.angle)
+
+    def toStringSameNames(self):
+        print("Word:", self.term, "XPos:", self.x, "YPos:", self.y, "Width:", self.width,
+              "Height:", self.height, "Speed:", self.speed, "Angle Facing:", self.radians)
