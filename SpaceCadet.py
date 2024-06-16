@@ -100,17 +100,31 @@ def createShips(totalEnemies):
         enemy_List.append(currentShip)
         totalEnemies = totalEnemies - 1
 
+# def createDic():
+#     global Dict
+#     global dictS_ize
+#     f = open("Dictionary.txt", "r")
+#     lines = f.readlines()
+#     for line in lines:
+#         word = line.strip('\n')
+#         if (len(line)) > 6 and word.isalpha() == True:
+#             Dict.append(word.lower())
+#     dictS_ize = len(Dict)
+
 def createDic():
     global Dict
     global dictS_ize
-    f = open("Dictionary.txt", "r")
-    lines = f.readlines()
-    for line in lines:
+    Dict = []  # Initialize Dict as an empty list
+    with open("Dictionary.txt", "r") as f:
+        lines = f.readlines()
+    index = 0
+    while index < len(lines):
+        line = lines[index]
         word = line.strip('\n')
-        if (len(line)) > 6 and word.isalpha() == True:
+        if len(line) > 6 and word.isalpha():
             Dict.append(word.lower())
+        index += 1
     dictS_ize = len(Dict)
-
 
 class FPS():
     def __init__(self):
