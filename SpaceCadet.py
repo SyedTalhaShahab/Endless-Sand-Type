@@ -100,17 +100,6 @@ def createShips(totalEnemies):
         enemy_List.append(currentShip)
         totalEnemies = totalEnemies - 1
 
-# def createDic():
-#     global Dict
-#     global dictS_ize
-#     f = open("Dictionary.txt", "r")
-#     lines = f.readlines()
-#     for line in lines:
-#         word = line.strip('\n')
-#         if (len(line)) > 6 and word.isalpha() == True:
-#             Dict.append(word.lower())
-#     dictS_ize = len(Dict)
-
 def createDic():
     global Dict
     global dictS_ize
