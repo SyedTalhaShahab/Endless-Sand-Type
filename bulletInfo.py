@@ -1,12 +1,5 @@
 class bulletInfo:
-    img = None
-    xCordinate = None
-    yCordinate = None
-    imgW = None
-    imgH = None
-    speedN = None
-    angle = None
-    shipFacingDirection = None
+    img, xCordinate, yCordinate, imgW, imgH, speedN, angle, shipFacingDirection = None, None, None, None, None, None, None, None
 
     def __init__(self, img, xCordinate, yCordinate, imgW, imgH, speedN, angle, shipFacingDirection):
         self.img = img
