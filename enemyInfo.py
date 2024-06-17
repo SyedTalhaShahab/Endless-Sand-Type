@@ -1,14 +1,9 @@
 class enemyInfo:
-    image = None
-    term = None
-    x = None
-    y = None
-    height = None
-    width = None
-    speed = None
     color = [255, 255, 255]
     radians = 0
     angle = 0
+    image, term, x, y, height, width, speed = None, None, None, None, None, None, None
+
 
     def __init__(self, image, term, x, y, width, height, speed):
         self.image = image
