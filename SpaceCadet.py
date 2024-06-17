@@ -23,6 +23,7 @@ Dict = []
 enemy_List = []
 enemy_Number = 4
 bg_Speed = 2
+rain_Speed = 10
 
 player_X_Pos = (M_WIDTH / 2) - 20
 player_Y_Pos = (M_HEIGHT - 50)
@@ -55,12 +56,16 @@ pygame.display.set_caption('Space Cadet')
 
 
 # icon image
-icon = pygame.image.load(os.path.join("Sprites", "icon.jfif"))
+icon = pygame.image.load(os.path.join("Sprites", "plasmaICON.jpg"))
 pygame.display.set_icon(icon)
 
 # Emp
-EMPImg = pygame.image.load(os.path.join("Sprites", "plasmaICON.jpg"))
+# plasmaICON.jpg # plasmaICON.jpg
+EMPImg = pygame.image.load(os.path.join("Sprites", "shockWave.png"))
 EMPImg = pygame.transform.scale((EMPImg), (30, 30))
+
+rain_backgrr = pygame.image.load(os.path.join(
+    "Sprites", "rain4.png"))
 
 BG_IMG = pygame.image.load(os.path.join(
     "Sprites", "waterJPG.jpg"))
@@ -71,10 +76,11 @@ bottom = pygame.image.load(os.path.join(
     "Sprites", "bottomPNG.png"))
 
 BG_IMG = pygame.transform.scale((BG_IMG), (M_WIDTH, M_HEIGHT))
+rain_backgrr = pygame.transform.scale((rain_backgrr), (M_WIDTH, M_HEIGHT))
 
 
-bottomControls = pygame.transform.scale(
-    (bottom), (M_WIDTH, bottom.get_height()))
+bottomControls = pygame.transform.scale( (bottom), (M_WIDTH, bottom.get_height()))
+
 topControls = pygame.transform.scale((top), (M_WIDTH, top.get_height()))
 
 # player
@@ -96,9 +102,11 @@ def createShips(totalEnemies):
         randomSpeed = .09
         randomX = random.randint(0, M_WIDTH)  # random x
         randomY = ((random.randint(50, 100))*-1)  # random y
-        currentShip = ship.enemyInfo(enemyImage, randomWord, randomX, randomY, 30, 30, randomSpeed)
+        currentShip = ship.enemyInfo(
+            enemyImage, randomWord, randomX, randomY, 30, 30, randomSpeed)
         enemy_List.append(currentShip)
         totalEnemies = totalEnemies - 1
+
 
 def createDic():
     global Dict
@@ -114,6 +122,7 @@ def createDic():
             Dict.append(word.lower())
         index += 1
     dictS_ize = len(Dict)
+
 
 class FPS():
     def __init__(self):
@@ -360,6 +369,8 @@ def main():
     global lvl_Var
 
     global bg_Speed
+    global rain_Speed
+
     global score_Var
 
     global user
@@ -367,7 +378,10 @@ def main():
 
     enemy_Number = 0
     EMP_zoom = 40
-    i = 0
+    backSpeed_start = 0
+    rainspeed_start = 0
+    rainspeed_start2 = 0
+
     using_EMP = False
 
     # vars for EMP blast
@@ -377,23 +391,29 @@ def main():
     saveIndexOFSPACESHIPp = -1
     letter = ""
     letter2 = ""
-    while True:
+
+    running = True
+    while running:
         if (livesVar == 0):
             sys.exit()
 
-        # background image
-        screen.fill((0, 0, 0))
-        # controls
+        screen.blit(BG_IMG, (0, backSpeed_start))
+        screen.blit(BG_IMG, (0, -(BG_IMG.get_height()) + backSpeed_start))
+        if (backSpeed_start >= BG_IMG.get_height()):
+            screen.blit(BG_IMG, (0, -(BG_IMG.get_height()) + backSpeed_start))
+            backSpeed_start = 0
+        backSpeed_start += bg_Speed
 
-        screen.blit(BG_IMG, (0, 0))
-        screen.blit(BG_IMG, (0, i))
-        screen.blit(BG_IMG, (0, -(BG_IMG.get_height()) + i))
-        if (i >= BG_IMG.get_height()):
-            screen.blit(BG_IMG, (0, -(BG_IMG.get_height()) + i))
-            i = 0
-        i += bg_Speed
+        screen.blit(rain_backgrr, (0, rainspeed_start))
+        screen.blit(
+            rain_backgrr, (0, -(rain_backgrr.get_height()) + rainspeed_start))
+        if (rainspeed_start >= rain_backgrr.get_height()):
+            screen.blit(
+                rain_backgrr, (0, -(rain_backgrr.get_height()) + rainspeed_start))
+            rainspeed_start = 0
+        rainspeed_start += rain_Speed
 
-        screen.blit(bottomControls, (0, M_HEIGHT-100))
+        screen.blit(bottomControls, (0, M_HEIGHT-bottomControls.get_height()))
         screen.blit(topControls, (0, 0))
 
         # load in the player boundary and show the controls
