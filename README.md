@@ -1,2 +1,2 @@
 # SpaceInvaders
-MAKE SURE YOUR DIRECTORY LAYOUT IS EXACTLY THE SAME
+Your vs code EXPLORER tab needs to show this exact directory layout for this program to work
