@@ -91,12 +91,25 @@ user = pygame.transform.scale((user), (20, 20))
 LAZER = pygame.image.load(os.path.join("Sprites", "blueShot.png"))
 
 
+# We need to preload the four ships once instead of every ship that spawns.
+preload_four_ship_types()
+def preload_four_ship_types():
+    for i in range(4):
+        enemyImage = pygame.image.load(os.path.join("Sprites", f"enemy{randomShipNum}.jpg"))
+        enemyImage = pygame.transform.scale((enemyImage), (30, 30))
+        enemy_List.append(enemyImage)
+
 def createShips(totalEnemies):
     while (totalEnemies > 0):
+        # randomShipNum = random.randrange(4)
+        # enemyImage = pygame.image.load(os.path.join(
+        #     "Sprites", f"enemy{randomShipNum}.jpg"))
+        # enemyImage = pygame.transform.scale((enemyImage), (30, 30))
+        # we comment this top part of the method out and replace it with these two lines
+        # below so it eliminates the pauses when new levels create a lot more enemies
         randomShipNum = random.randrange(4)
-        enemyImage = pygame.image.load(os.path.join(
-            "Sprites", f"enemy{randomShipNum}.jpg"))
-        enemyImage = pygame.transform.scale((enemyImage), (30, 30))
+        enemyImage = enemy_List[randomShipNum]
+        
         # no need to exclude words already used
         randomWord = Dict[random.randint(0, (len(Dict)-1))]
         randomSpeed = .09
@@ -106,6 +119,24 @@ def createShips(totalEnemies):
             enemyImage, randomWord, randomX, randomY, 30, 30, randomSpeed)
         enemy_List.append(currentShip)
         totalEnemies = totalEnemies - 1
+        
+# def createShips(totalEnemies):
+#     while (totalEnemies > 0):
+#         randomShipNum = random.randrange(4)
+#         enemyImage = pygame.image.load(os.path.join(
+#             "Sprites", f"enemy{randomShipNum}.jpg"))
+#         enemyImage = pygame.transform.scale((enemyImage), (30, 30))
+#         we comment this top part of the method out and replace it with these two lines so it
+#         eliminates the pauses when new levels create a lot more enemies
+#         # no need to exclude words already used
+#         randomWord = Dict[random.randint(0, (len(Dict)-1))]
+#         randomSpeed = .09
+#         randomX = random.randint(0, M_WIDTH)  # random x
+#         randomY = ((random.randint(50, 100))*-1)  # random y
+#         currentShip = ship.enemyInfo(
+#             enemyImage, randomWord, randomX, randomY, 30, 30, randomSpeed)
+#         enemy_List.append(currentShip)
+#         totalEnemies = totalEnemies - 1
 
 
 def createDic():
