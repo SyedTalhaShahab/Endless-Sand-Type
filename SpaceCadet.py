@@ -1,3 +1,17 @@
+# -------------------------------------------------------------------------------
+# TYPE THIS IN THE TERMINAL BEFORE YOU START
+# -------------------------------------------------------------------------------
+
+# Remove-Item -Recurse -Force .venv
+# py -3.12 -m venv .venv
+# .\.venv\Scripts\Activate.ps1
+# python -m pip install pygame
+# py -3.12 -m pip install pygame
+# python -m pip install --upgrade pip
+# python -c "import pygame; print(pygame.__version__)"
+# python -c "import sys; print(sys.executable)"
+# python SpaceCadet.py
+
 import pygame
 import os
 import math
@@ -488,6 +502,7 @@ def main():
             # Right now, for each enemy, this is )(n^2)
             # we call this function and the function loops every enemy again.
             # the problem is, if we have 100 enemies, we loop 1,000 times. To fix this, we need Measure distance needs to be before the method starts.
+            
             XPosEnemy = 0
             YPosEnemy = 0
 
