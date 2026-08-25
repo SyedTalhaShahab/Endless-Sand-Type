@@ -451,8 +451,12 @@ def main():
 
     # this part of hte code loops through the ships and gets thier positions
     # this for loop then sets the x and y position after measuring the distance
+        measureDistance() # this is calculated ONCE per frame. so it is O(n)
         for currEnmy in enemy_List:
-            measureDistance()
+            # measureDistance() 
+            # Right now, for each enemy, this is )(n^2)
+            # we call this function and the function loops every enemy again.
+            # the problem is, if we have 100 enemies, we loop 1,000 times. To fix this, we need Measure distance needs to be before the method starts.
             XPosEnemy = 0
             YPosEnemy = 0
 
